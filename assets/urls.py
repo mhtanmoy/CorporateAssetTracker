@@ -14,7 +14,7 @@ urlpatterns = [
 
     path('checkout/', DeviceLogViewSet.as_view({'post': 'checkout'}), name='checkout'),
     path('checkin/<int:pk>/', DeviceLogViewSet.as_view({'patch': 'checkin'}), name='checkin'),
-    path('log/', DeviceLogViewSet.as_view({'get': 'list'}), name='log'),
-    path('log/<int:pk>/', DeviceLogViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'}), name='log'),
+    path('device_log/', DeviceLogViewSet.as_view({'get': 'list'}), name='log'),
+    path('device_log/<int:pk>/', DeviceLogViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'}), name='log'),
 
 ]
