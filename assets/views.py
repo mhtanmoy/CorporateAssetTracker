@@ -47,8 +47,8 @@ class CompanyViewSet(viewsets.ModelViewSet):
     # This method will be called when a GET request is made to the endpoint, and it will return a list of all companies (Pagination is also implemented by default rest_framework pagination)
     def list(self, request):
         try:
-            companies = Company.objects.all()
-            serializer = self.get_serializer(companies, many=True)
+            qs = self.filter_queryset(self.get_queryset())
+            serializer = self.get_serializer(qs, many=True)
             return ResponseWrapper(
                 data=serializer.data,
                 message='Company list',
@@ -149,8 +149,8 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     # This method will be called when a GET request is made to the endpoint, and it will return a list of all employees (Pagination is also implemented by default rest_framework pagination)
     def list(self, request):
         try:
-            employees = Employee.objects.all()
-            serializer = self.get_serializer(employees, many=True)
+            qs = self.filter_queryset(self.get_queryset())
+            serializer = self.get_serializer(qs, many=True)
             return ResponseWrapper(
                 data=serializer.data,
                 message='Employee list',
@@ -258,8 +258,8 @@ class DeviceViewSet(viewsets.ModelViewSet):
     # This method will be called when a GET request is made to the endpoint, and it will return a list of all devices (Pagination is also implemented by default rest_framework pagination)
     def list(self, request):
         try:
-            devices = Device.objects.all()
-            serializer = self.get_serializer(devices, many=True)
+            qs = self.filter_queryset(self.get_queryset())
+            serializer = self.get_serializer(qs, many=True)
             return ResponseWrapper(
                 data=serializer.data,
                 message='Device list',
@@ -400,8 +400,8 @@ class DeviceLogViewSet(viewsets.ModelViewSet):
     # this method will be called when a GET request is made to the endpoint, and it will return all device logs
     def list(self, request):
         try:
-            device_logs = DeviceLog.objects.all()
-            serializer = self.get_serializer(device_logs, many=True)
+            qs = self.filter_queryset(self.get_queryset())
+            serializer = self.get_serializer(qs, many=True)
             return ResponseWrapper(
                 data=serializer.data,
                 message='Device log list',
