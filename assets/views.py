@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from .models import Company, Employee, Device, DeviceLog
 from .serializers import CompanySerializer, EmployeeSerializer, DeviceSerializer, DeviceLogSerializer, DeviceCheckoutSerializer, DeviceCheckinSerializer
-from rest_framework import permissions, status, viewsets
+from .filters import CompanyFilter, EmployeeFilter, DeviceFilter, DeviceLogFilter 
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import permissions, status, viewsets, filters
 from rest_framework.permissions import IsAuthenticated
 from utils.response_wrapper import ResponseWrapper
 from rest_framework.response import Response
@@ -16,6 +18,9 @@ class CompanyViewSet(viewsets.ModelViewSet):
     serializer_class = CompanySerializer
     permission_classes = [permissions.IsAdminUser]
     lookup_field = 'pk'
+    filterset_class = CompanyFilter
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter,)
+    filterset_fields = ('id', 'name')
 
     # This method will be called when a POST request is made to the endpoint, and it will create a new company
     def create(self, request):
@@ -115,6 +120,9 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     serializer_class = EmployeeSerializer
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'pk'
+    filterset_class = EmployeeFilter
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter,)
+    filterset_fields = ('id', 'company')
 
     # This method will be called when a POST request is made to the endpoint, and it will create a new employee
     def create(self, request):
@@ -214,6 +222,9 @@ class DeviceViewSet(viewsets.ModelViewSet):
     serializer_class = DeviceSerializer
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'pk'
+    filterset_class = DeviceFilter
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter,)
+    filterset_fields = ('id', 'company', 'employee')
 
     # def get_permissions(self):
     #     if self.action == 'list' or self.action == 'retrieve':
@@ -320,6 +331,9 @@ class DeviceLogViewSet(viewsets.ModelViewSet):
     #serializer_class = DeviceLogSerializer
     #permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'pk'
+    filterset_class = DeviceLogFilter
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter,)
+    filterset_fields = ('id', 'device', 'employee', 'checkout_date', 'checkin_date')
 
     # this method needed custom permission classes for each action
     def get_permissions(self):
