@@ -5,6 +5,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'phone', 'first_name', 'last_name', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
+        read_only_fields = ['id', 'is_admin']
+
+
+class UserTokenSerializer(serializers.ModelSerializer):
     token = serializers.SerializerMethodField()
     class Meta:
         model = User
