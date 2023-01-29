@@ -1,15 +1,20 @@
 from django.shortcuts import render
-from rest_framework import permissions, status, viewsets
+from rest_framework import permissions, status, viewsets, filters
 from rest_framework.response import Response
 from .models import UserAccount as User
-from .serializers import UserSerializer, LogSerializer, UserUpdateSerializer, PasswordUpdateSerializer
+from .serializers import UserSerializer, LogSerializer, UserUpdateSerializer, PasswordUpdateSerializer, UserTokenSerializer
 from django.db.models import Q
 from utils.response_wrapper import ResponseWrapper
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import UserFilter
 
 # Create your views here.
 # Using filter() instead of get() where needed because get() will throw an exception if no object is found
 class UserAuthViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
+    filterset_class = UserFilter
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter,)
+    filterset_fields = ('id', 'username', 'email', 'first_name', 'last_name')
 
     # this method needed custom permission classes for each action
     def get_permissions(self):
@@ -35,6 +40,9 @@ class UserAuthViewSet(viewsets.ModelViewSet):
         elif self.action == 'password_update':
             return PasswordUpdateSerializer
 
+        elif self.action == 'register':
+            return UserTokenSerializer
+
         else:
             return UserSerializer
 
@@ -42,8 +50,8 @@ class UserAuthViewSet(viewsets.ModelViewSet):
     # this method is for all users list
     def user_list(self, request):
         try:
-            users = User.objects.all()
-            serializer = self.get_serializer(users, many=True)
+            qs = self.filter_queryset(self.get_queryset())
+            serializer = self.get_serializer(qs, many=True)
             return ResponseWrapper(
                 data=serializer.data,
                 message='User list',
@@ -105,7 +113,7 @@ class UserAuthViewSet(viewsets.ModelViewSet):
                 user = User.objects.filter(Q(email=phone_or_email) | Q(phone=phone_or_email)).first()
                 if user:
                     if user.check_password(password):
-                        serializer = UserSerializer(user)
+                        serializer = UserTokenSerializer(user)
                         return ResponseWrapper(
                             data=serializer.data,
                             status=status.HTTP_200_OK,
