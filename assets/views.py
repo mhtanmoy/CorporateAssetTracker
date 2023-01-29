@@ -9,14 +9,15 @@ from django.db.models import Q
 
 
 # Create your views here.
+# Using filter() instead of get() where needed because get() will throw an exception if no object is found
 
 class CompanyViewSet(viewsets.ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAdminUser]
     lookup_field = 'pk'
 
-
+    # This method will be called when a POST request is made to the endpoint, and it will create a new company
     def create(self, request):
         try:
             serializer = self.get_serializer(data=request.data)
@@ -38,7 +39,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
-
+    # This method will be called when a GET request is made to the endpoint, and it will return a list of all companies (Pagination is also implemented by default rest_framework pagination)
     def list(self, request):
         try:
             companies = Company.objects.all()
@@ -54,7 +55,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
-
+    # This method will be called when a GET request is made to the endpoint with a company id, and it will return a single company
     def retrieve(self, request, *args, **kwargs):
         try:
             company = Company.objects.filter(id=kwargs['pk']).first()
@@ -70,7 +71,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
-
+    # This method will be called when a PATCH request is made to the endpoint with a company id, and it will update a single company (Partial update thats why using PATCH)
     def update(self, request, *args, **kwargs):
         try:
             company = Company.objects.filter(id=kwargs['pk']).first()
@@ -93,7 +94,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
-
+    # This method will be called when a DELETE request is made to the endpoint with a company id, and it will delete a single company
     def destroy(self, request, *args, **kwargs):
         try:
             company = Company.objects.filter(id=kwargs['pk']).first()
@@ -115,7 +116,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'pk'
 
-
+    # This method will be called when a POST request is made to the endpoint, and it will create a new employee
     def create(self, request):
         try:
             serializer = self.get_serializer(data=request.data)
@@ -137,7 +138,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
-
+    # This method will be called when a GET request is made to the endpoint, and it will return a list of all employees (Pagination is also implemented by default rest_framework pagination)
     def list(self, request):
         try:
             employees = Employee.objects.all()
@@ -153,7 +154,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
-
+    # This method will be called when a GET request is made to the endpoint with a employee id, and it will return a single employee
     def retrieve(self, request, *args, **kwargs):
         try:
             employee = Employee.objects.filter(id=kwargs['pk']).first()
@@ -169,7 +170,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
-
+    # This method will be called when a PATCH request is made to the endpoint with a employee id, and it will update a single employee (Partial update thats why using PATCH)
     def update(self, request, *args, **kwargs):
         try:
             employee = Employee.objects.filter(id=kwargs['pk']).first()
@@ -192,7 +193,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
-
+    # This method will be called when a DELETE request is made to the endpoint with a employee id, and it will delete a single employee
     def destroy(self, request, *args, **kwargs):
         try:
             employee = Employee.objects.filter(id=kwargs['pk']).first()
@@ -214,7 +215,14 @@ class DeviceViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'pk'
 
+    # def get_permissions(self):
+    #     if self.action == 'list' or self.action == 'retrieve':
+    #         permission_classes = [permissions.AllowAny]
+    #     else:
+    #         permission_classes = [permissions.IsAdminUser]
+    #     return [permission() for permission in permission_classes]
 
+    # This method will be called when a POST request is made to the endpoint, and it will create a new device
     def create(self, request):
         try:
             serializer = self.get_serializer(data=request.data)
@@ -236,7 +244,7 @@ class DeviceViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
-
+    # This method will be called when a GET request is made to the endpoint, and it will return a list of all devices (Pagination is also implemented by default rest_framework pagination)
     def list(self, request):
         try:
             devices = Device.objects.all()
@@ -252,7 +260,7 @@ class DeviceViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
-
+    # This method will be called when a GET request is made to the endpoint with a device id, and it will return a single device
     def retrieve(self, request, *args, **kwargs):
         try:
             device = Device.objects.filter(id=kwargs['pk']).first()
@@ -268,7 +276,7 @@ class DeviceViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
-
+    # This method will be called when a PATCH request is made to the endpoint with a device id, and it will update a single device (Partial update thats why using PATCH)
     def update(self, request, *args, **kwargs):
         try:
             device = Device.objects.filter(id=kwargs['pk']).first()
@@ -291,7 +299,7 @@ class DeviceViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
-
+    # This method will be called when a DELETE request is made to the endpoint with a device id, and it will delete a single device
     def destroy(self, request, *args, **kwargs):
         try:
             device = Device.objects.filter(id=kwargs['pk']).first()
@@ -310,10 +318,18 @@ class DeviceViewSet(viewsets.ModelViewSet):
 class DeviceLogViewSet(viewsets.ModelViewSet):
     queryset = DeviceLog.objects.all()
     #serializer_class = DeviceLogSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    #permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'pk'
 
+    # this method needed custom permission classes for each action
+    def get_permissions(self):
+        if self.action == 'destroy':
+            permission_classes = [permissions.IsAdminUser]
+        else:
+            permission_classes = [permissions.IsAuthenticated]
+        return [permission() for permission in permission_classes]
 
+    # this method needed custom serializer classes for each action
     def get_serializer_class(self):
         if self.action == 'checkout':
             return DeviceCheckoutSerializer
@@ -322,7 +338,7 @@ class DeviceLogViewSet(viewsets.ModelViewSet):
         else:
             return DeviceLogSerializer
 
-
+    # checkout device and create a new device log
     def checkout(self, request):
         try:
             serializer = self.get_serializer(data=request.data)
@@ -344,6 +360,7 @@ class DeviceLogViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
+    # checkin device and update the device log
     def checkin(self, request, *args, **kwargs):
         try:
             device_log = DeviceLog.objects.filter(id=kwargs['pk']).first()
@@ -366,6 +383,7 @@ class DeviceLogViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
+    # this method will be called when a GET request is made to the endpoint, and it will return all device logs
     def list(self, request):
         try:
             device_logs = DeviceLog.objects.all()
@@ -381,6 +399,7 @@ class DeviceLogViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
+    # this method will be called when a GET request is made to the endpoint with a device log id, and it will return a single device log
     def retrieve(self, request, *args, **kwargs):
         try:
             device_log = DeviceLog.objects.filter(id=kwargs['pk']).first()
@@ -396,6 +415,7 @@ class DeviceLogViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
+    # this method will be called when a PATCH request is made to the endpoint with a device log id, and it will update a single device log (Partial update thats why using PATCH)
     def destroy(self, request, *args, **kwargs):
         try:
             device_log = DeviceLog.objects.filter(id=kwargs['pk']).first()

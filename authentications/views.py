@@ -7,27 +7,23 @@ from django.db.models import Q
 from utils.response_wrapper import ResponseWrapper
 
 # Create your views here.
-
+# Using filter() instead of get() where needed because get() will throw an exception if no object is found
 class UserAuthViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
 
-
+    # this method needed custom permission classes for each action
     def get_permissions(self):
         if self.action == 'register':
             permission_classes = [permissions.AllowAny]
-
         elif self.action == 'login':
             permission_classes = [permissions.AllowAny]
-
         elif self.action == 'user_list':
             permission_classes = [permissions.IsAdminUser]
-
         else:
             permission_classes = [permissions.IsAuthenticated]
-
         return [permission() for permission in permission_classes]
 
-
+    # this method needed custom serializer classes for each action
     def get_serializer_class(self):
 
         if self.action == 'login':
@@ -43,6 +39,7 @@ class UserAuthViewSet(viewsets.ModelViewSet):
             return UserSerializer
 
 
+    # this method is for all users list
     def user_list(self, request):
         try:
             users = User.objects.all()
@@ -59,7 +56,7 @@ class UserAuthViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
-
+    # this method is for user registration
     def register(self, request):
         try:
             email = request.data.get('email')
@@ -98,7 +95,7 @@ class UserAuthViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
-
+    # this method is for user login
     def login(self, request):
         try:
             phone_or_email = request.data.get('phone_or_email')
@@ -135,7 +132,7 @@ class UserAuthViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
-
+    # this method is for user update
     def update(self, request, *args, **kwargs):
         try:
             user = User.objects.filter(id=request.user.id).first()
@@ -158,7 +155,7 @@ class UserAuthViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
-
+    # this method is for user user detail
     def user_detail(self, request, *args, **kwargs):
         try:
             user = User.objects.filter(id=request.user.id).first()
@@ -180,7 +177,7 @@ class UserAuthViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
-
+    # this method is for user password update
     def password_update(self, request):
         try:
             user = User.objects.filter(id=request.user.id).first()
