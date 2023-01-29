@@ -11,13 +11,15 @@ class CompanySerializer(serializers.ModelSerializer):
         
 
 class EmployeeSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user_details = serializers.SerializerMethodField()
     class Meta:
         model = Employee
-        fields = ['id', 'user', 'company', 'address']
-        read_only_fields = ['id']
+        fields = ['id', 'user', 'company', 'address', 'user_details']
+        extra_kwargs = {'user': {'write_only': True}}
+        read_only_fields = ['id', 'user_details']
 
-    def get_user(self, obj):
+
+    def get_user_details(self, obj):
         user = User.objects.get(id=obj.user.id)
         return UserSerializer(user).data
 

@@ -108,3 +108,103 @@ class CompanyViewSet(viewsets.ModelViewSet):
                 error_code=status.HTTP_400_BAD_REQUEST
             )
 
+
+class EmployeeViewSet(viewsets.ModelViewSet):
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'pk'
+
+
+    def create(self, request):
+        try:
+            serializer = self.get_serializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return ResponseWrapper(
+                    data=serializer.data,
+                    message='Employee created',
+                    status=status.HTTP_201_CREATED
+                )
+            else:
+                return ResponseWrapper(
+                    message=serializer.errors,
+                    error_code=status.HTTP_400_BAD_REQUEST
+                )
+        except Exception as e:
+            return ResponseWrapper(
+                message=str(e),
+                error_code=status.HTTP_400_BAD_REQUEST
+            )
+
+
+    def list(self, request):
+        try:
+            employees = Employee.objects.all()
+            serializer = self.get_serializer(employees, many=True)
+            return ResponseWrapper(
+                data=serializer.data,
+                message='Employee list',
+                status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return ResponseWrapper(
+                message=str(e),
+                error_code=status.HTTP_400_BAD_REQUEST
+            )
+
+
+    def retrieve(self, request, *args, **kwargs):
+        try:
+            employee = Employee.objects.filter(id=kwargs['pk']).first()
+            serializer = self.get_serializer(employee)
+            return ResponseWrapper(
+                data=serializer.data,
+                message='Employee retrieved',
+                status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return ResponseWrapper(
+                message=str(e),
+                error_code=status.HTTP_400_BAD_REQUEST
+            )
+
+
+    def update(self, request, *args, **kwargs):
+        try:
+            employee = Employee.objects.filter(id=kwargs['pk']).first()
+            serializer = self.get_serializer(employee, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return ResponseWrapper(
+                    data=serializer.data,
+                    message='Employee updated',
+                    status=status.HTTP_200_OK
+                )
+            else:
+                return ResponseWrapper(
+                    message=serializer.errors,
+                    error_code=status.HTTP_400_BAD_REQUEST
+                )
+        except Exception as e:
+            return ResponseWrapper(
+                message=str(e),
+                error_code=status.HTTP_400_BAD_REQUEST
+            )
+
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            employee = Employee.objects.filter(id=kwargs['pk']).first()
+            employee.delete()
+            return ResponseWrapper(
+                message='Employee deleted',
+                status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return ResponseWrapper(
+                message=str(e),
+                error_code=status.HTTP_400_BAD_REQUEST
+            )
+
+            
