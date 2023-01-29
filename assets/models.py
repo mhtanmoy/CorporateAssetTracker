@@ -16,7 +16,7 @@ class Employee(models.Model):
     address = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return self.user.username
 
 class Device(models.Model):
     name = models.CharField(max_length=100)
@@ -37,6 +37,6 @@ class DeviceLog(models.Model):
     checkin_condition = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return self.device.name
 
 

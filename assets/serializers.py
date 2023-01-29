@@ -24,26 +24,58 @@ class EmployeeSerializer(serializers.ModelSerializer):
         return UserSerializer(user).data
 
 class DeviceSerializer(serializers.ModelSerializer):
-    company = CompanySerializer()
+    company_details = serializers.SerializerMethodField()
     class Meta:
         model = Device
-        fields = ['id', 'name', 'company', 'model', 'brand', 'serial_number']
-        read_only_fields = ['id']
+        fields = ['id', 'name', 'company', 'model', 'brand', 'serial_number', 'company_details']
+        extra_kwargs = {'company': {'write_only': True}}
+        read_only_fields = ['id', 'company_details']
 
-    def get_company(self, obj):
+    def get_company_details(self, obj):
         return CompanySerializer(obj.company).data
 
 
 class DeviceLogSerializer(serializers.ModelSerializer):
-    device = DeviceSerializer()
-    employee = EmployeeSerializer()
+    device_details = serializers.SerializerMethodField()
+    employee_details = serializers.SerializerMethodField()
     class Meta:
         model = DeviceLog
-        fields = ['id', 'device', 'employee', 'checkout_date', 'checkout_condition', 'checkin_date', 'checkin_condition']
-        read_only_fields = ['id']
+        fields = ['id', 'device', 'employee', 'checkout_date', 'checkout_condition', 'checkin_date', 'checkin_condition', 'device_details', 'employee_details']
+        extra_kwargs = {'device': {'write_only': True}, 'employee': {'write_only': True}}
+        read_only_fields = ['id', 'device_details', 'employee_details', 'checkout_date', 'checkin_date']
 
-    def get_device(self, obj):
+    def get_device_details(self, obj):
         return DeviceSerializer(obj.device).data
 
-    def get_employee(self, obj):
+    def get_employee_details(self, obj):
         return EmployeeSerializer(obj.employee).data
+
+class DeviceCheckoutSerializer(serializers.ModelSerializer):
+    device_details = serializers.SerializerMethodField()
+    employee_details = serializers.SerializerMethodField()
+    class Meta:
+        model = DeviceLog
+        fields = ['id', 'device', 'employee', 'checkout_date', 'checkout_condition', 'device_details', 'employee_details']
+        extra_kwargs = {'device': {'write_only': True}, 'employee': {'write_only': True}}
+        read_only_fields = ['id', 'device_details', 'employee_details', 'checkout_date']
+
+    def get_device_details(self, obj):
+        return DeviceSerializer(obj.device).data
+
+    def get_employee_details(self, obj):
+        return EmployeeSerializer(obj.employee).data
+
+class DeviceCheckinSerializer(serializers.ModelSerializer):
+    device_details = serializers.SerializerMethodField()
+    employee_details = serializers.SerializerMethodField()
+    class Meta:
+        model = DeviceLog
+        fields = ['id', 'device', 'employee', 'checkout_date', 'checkout_condition', 'checkin_date', 'checkin_condition', 'device_details', 'employee_details']
+        read_only_fields = ['id', 'device', 'employee', 'checkout_date', 'checkout_condition', 'device_details', 'employee_details']
+
+    def get_device_details(self, obj):
+        return DeviceSerializer(obj.device).data
+
+    def get_employee_details(self, obj):
+        return EmployeeSerializer(obj.employee).data
+    
