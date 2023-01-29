@@ -10,7 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'email', 'phone', 'first_name', 'last_name', 'password', 'token', 'is_admin']
         extra_kwargs = {'password': {'write_only': True}}
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'is_admin']
 
     def get_token(self, obj):
         token = RefreshToken.for_user(obj)
