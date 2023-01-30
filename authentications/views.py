@@ -33,16 +33,12 @@ class UserAuthViewSet(viewsets.ModelViewSet):
 
         if self.action == 'login':
             return LogSerializer
-
         elif self.action == 'update':
             return UserUpdateSerializer
-
         elif self.action == 'password_update':
             return PasswordUpdateSerializer
-
         elif self.action == 'register':
             return UserTokenSerializer
-
         else:
             return UserSerializer
 
@@ -108,7 +104,6 @@ class UserAuthViewSet(viewsets.ModelViewSet):
         try:
             phone_or_email = request.data.get('phone_or_email')
             password = request.data.get('password')
-
             if phone_or_email:
                 user = User.objects.filter(Q(email=phone_or_email) | Q(phone=phone_or_email)).first()
                 if user:

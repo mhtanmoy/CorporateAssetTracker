@@ -64,6 +64,11 @@ class CompanyViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         try:
             company = Company.objects.filter(id=kwargs['pk']).first()
+            if not company:
+                return ResponseWrapper(
+                    message='Company not found',
+                    error_code=status.HTTP_404_NOT_FOUND
+                )
             serializer = self.get_serializer(company)
             return ResponseWrapper(
                 data=serializer.data,
@@ -80,6 +85,11 @@ class CompanyViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         try:
             company = Company.objects.filter(id=kwargs['pk']).first()
+            if not company:
+                return ResponseWrapper(
+                    message='Company not found',
+                    error_code=status.HTTP_404_NOT_FOUND
+                )
             serializer = self.get_serializer(company, data=request.data)
             if serializer.is_valid():
                 serializer.save()
@@ -103,6 +113,11 @@ class CompanyViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         try:
             company = Company.objects.filter(id=kwargs['pk']).first()
+            if not company:
+                return ResponseWrapper(
+                    message='Company not found',
+                    error_code=status.HTTP_404_NOT_FOUND
+                )
             company.delete()
             return ResponseWrapper(
                 message='Company deleted',
@@ -166,6 +181,11 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         try:
             employee = Employee.objects.filter(id=kwargs['pk']).first()
+            if not employee:
+                return ResponseWrapper(
+                    message='Employee not found',
+                    error_code=status.HTTP_404_NOT_FOUND
+                )
             serializer = self.get_serializer(employee)
             return ResponseWrapper(
                 data=serializer.data,
@@ -182,6 +202,11 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         try:
             employee = Employee.objects.filter(id=kwargs['pk']).first()
+            if not employee:
+                return ResponseWrapper(
+                    message='Employee not found',
+                    error_code=status.HTTP_404_NOT_FOUND
+                )
             serializer = self.get_serializer(employee, data=request.data)
             if serializer.is_valid():
                 serializer.save()
@@ -205,6 +230,11 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         try:
             employee = Employee.objects.filter(id=kwargs['pk']).first()
+            if not employee:
+                return ResponseWrapper(
+                    message='Employee not found',
+                    error_code=status.HTTP_404_NOT_FOUND
+                )
             employee.delete()
             return ResponseWrapper(
                 message='Employee deleted',
@@ -275,6 +305,11 @@ class DeviceViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         try:
             device = Device.objects.filter(id=kwargs['pk']).first()
+            if not device:
+                return ResponseWrapper(
+                    message='Device not found',
+                    error_code=status.HTTP_404_NOT_FOUND
+                )
             serializer = self.get_serializer(device)
             return ResponseWrapper(
                 data=serializer.data,
@@ -291,6 +326,11 @@ class DeviceViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         try:
             device = Device.objects.filter(id=kwargs['pk']).first()
+            if not device:
+                return ResponseWrapper(
+                    message='Device not found',
+                    error_code=status.HTTP_404_NOT_FOUND
+                )
             serializer = self.get_serializer(device, data=request.data)
             if serializer.is_valid():
                 serializer.save()
@@ -314,6 +354,11 @@ class DeviceViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         try:
             device = Device.objects.filter(id=kwargs['pk']).first()
+            if not device:
+                return ResponseWrapper(
+                    message='Device not found',
+                    error_code=status.HTTP_404_NOT_FOUND
+                )
             device.delete()
             return ResponseWrapper(
                 message='Device deleted',
@@ -378,6 +423,11 @@ class DeviceLogViewSet(viewsets.ModelViewSet):
     def checkin(self, request, *args, **kwargs):
         try:
             device_log = DeviceLog.objects.filter(id=kwargs['pk']).first()
+            if not device_log:
+                return ResponseWrapper(
+                    message='Device log not found',
+                    error_code=status.HTTP_404_NOT_FOUND
+                )
             serializer = self.get_serializer(device_log, data=request.data)
             if serializer.is_valid():
                 serializer.save()
@@ -417,6 +467,11 @@ class DeviceLogViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         try:
             device_log = DeviceLog.objects.filter(id=kwargs['pk']).first()
+            if not device_log:
+                return ResponseWrapper(
+                    message='Device log not found',
+                    error_code=status.HTTP_404_NOT_FOUND
+                )
             serializer = self.get_serializer(device_log)
             return ResponseWrapper(
                 data=serializer.data,
@@ -433,6 +488,11 @@ class DeviceLogViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         try:
             device_log = DeviceLog.objects.filter(id=kwargs['pk']).first()
+            if not device_log:
+                return ResponseWrapper(
+                    message='Device log not found',
+                    error_code=status.HTTP_404_NOT_FOUND
+                )
             device_log.delete()
             return ResponseWrapper(
                 message='Device log deleted',
